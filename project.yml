@@ -1,4 +1,4 @@
-name: AIUsageTracker
+name: kx
 options:
   bundleIdPrefix: com.leonlei
   deploymentTarget:
@@ -12,7 +12,7 @@ settings:
     CURRENT_PROJECT_VERSION: "1"
 
 targets:
-  AIUsageTracker:
+  kx:
     type: application
     platform: macOS
     info:
@@ -22,14 +22,14 @@ targets:
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: false
     entitlements:
-      path: AIUsageTracker.entitlements
+      path: kx.entitlements
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
         com.apple.security.files.user-selected.read-write: true
         com.apple.security.personal-information.keychain: true
     sources:
-      - path: AIUsageTrackerApp.swift
+      - path: kxApp.swift
       - path: Views
       - path: ViewModels
       - path: Models
@@ -43,19 +43,19 @@ targets:
         INFOPLIST_FILE: Info.plist
         CODE_SIGN_STYLE: Automatic
         CODE_SIGN_IDENTITY: "-"
-        PRODUCT_BUNDLE_IDENTIFIER: com.leonlei.aiusagetracker
+        PRODUCT_BUNDLE_IDENTIFIER: com.leonlei.kx
         ENABLE_HARDENED_RUNTIME: true
     dependencies: []
 
-  AIUsageTrackerTests:
+  kxTests:
     type: bundle.unit-test
     platform: macOS
     sources:
-      - path: AIUsageTrackerTests
+      - path: kxTests
         type: group
     dependencies:
-      - target: AIUsageTracker
+      - target: kx
     settings:
       base:
-        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/AIUsageTracker.app/Contents/MacOS/AIUsageTracker"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/kx.app/Contents/MacOS/kx"
         BUNDLE_LOADER: "$(TEST_HOST)"

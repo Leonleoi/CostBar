@@ -4,10 +4,9 @@ struct FloatingBalanceView: View {
     @EnvironmentObject var dashboardVM: DashboardViewModel
 
     private var balanceText: String {
-        guard let record = dashboardVM.balances[.deepseek] else {
-            return "—"
-        }
-        return String(format: "%.2f %@", record.totalBalance, record.currency)
+        let (amount, currency) = dashboardVM.displayDeepseekBalance
+        guard let amount else { return "—" }
+        return String(format: "\(currency.symbol)%.2f", amount)
     }
 
     private var isAvailable: Bool {

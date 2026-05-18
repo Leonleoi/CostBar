@@ -1,8 +1,8 @@
-// AIUsageTrackerApp.swift
+// kxApp.swift
 import SwiftUI
 
 @main
-struct AIUsageTrackerApp: App {
+struct kxApp: App {
     @StateObject private var dashboardVM = DashboardViewModel()
 
     var body: some Scene {

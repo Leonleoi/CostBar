@@ -16,7 +16,7 @@ final class FloatingPanelController: NSObject, NSWindowDelegate {
         )
         super.init()
 
-        panel.title = "AIUsageTracker Floating"
+        panel.title = "kx Floating"
         panel.isFloatingPanel = true
         panel.level = .screenSaver
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]

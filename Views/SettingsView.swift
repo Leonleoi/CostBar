@@ -85,6 +85,15 @@ struct SettingsView: View {
                                 .foregroundColor(.secondary)
                         }
                     }
+
+                    Picker("Currency", selection: Binding(
+                        get: { dashboardVM.preferredCurrency },
+                        set: { dashboardVM.preferredCurrency = $0 }
+                    )) {
+                        Text("CNY ¥").tag(DashboardViewModel.CurrencyType.cny)
+                        Text("USD $").tag(DashboardViewModel.CurrencyType.usd)
+                    }
+                    .pickerStyle(.segmented)
                 }
 
                 Section("Refresh Settings") {

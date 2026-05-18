@@ -1,6 +1,6 @@
-// AIUsageTrackerTests/DeepSeekServiceTests.swift
+// kxTests/DeepSeekServiceTests.swift
 import XCTest
-@testable import AIUsageTracker
+@testable import kx
 
 final class DeepSeekServiceTests: XCTestCase {
     var service: DeepSeekService!

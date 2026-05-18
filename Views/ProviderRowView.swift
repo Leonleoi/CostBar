@@ -40,7 +40,12 @@ struct ProviderRowView: View {
                 }
 
                 if let balance = dashboardVM.balances[config.provider] {
-                    Text("Balance: \(String(format: "%.2f", balance.totalBalance)) \(balance.currency)")
+                    let (amount, currency) = config.provider == .deepseek
+                        ? dashboardVM.displayDeepseekBalance
+                        : (balance.totalBalance, dashboardVM.preferredCurrency)
+                    let dispAmount = amount ?? balance.totalBalance
+                    let dispCurrency = currency.rawValue
+                    Text("Balance: \(String(format: "%.2f", dispAmount)) \(dispCurrency)")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

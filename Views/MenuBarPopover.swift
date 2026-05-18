@@ -8,7 +8,7 @@ struct MenuBarPopover: View {
         VStack(spacing: 0) {
             // Header
             HStack {
-                Text("AI Usage Tracker")
+                Text("kx")
                     .font(.headline)
                 Spacer()
                 if dashboardVM.isRefreshing {

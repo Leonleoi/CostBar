@@ -1,6 +1,6 @@
-// AIUsageTrackerTests/LocalCacheTests.swift
+// kxTests/LocalCacheTests.swift
 import XCTest
-@testable import AIUsageTracker
+@testable import kx
 
 final class LocalCacheTests: XCTestCase {
     let cache = LocalCache()

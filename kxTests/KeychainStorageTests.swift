@@ -1,6 +1,6 @@
-// AIUsageTrackerTests/KeychainStorageTests.swift
+// kxTests/KeychainStorageTests.swift
 import XCTest
-@testable import AIUsageTracker
+@testable import kx
 
 final class KeychainStorageTests: XCTestCase {
     let storage = KeychainStorage()

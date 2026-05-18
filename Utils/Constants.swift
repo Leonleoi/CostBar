@@ -2,7 +2,7 @@
 import Foundation
 
 enum AppConstants {
-    static let appName = "AIUsageTracker"
+    static let appName = "kx"
     static let defaultRefreshInterval: TimeInterval = 300 // 5 minutes
     static let minRefreshInterval: TimeInterval = 30
     static let maxRefreshInterval: TimeInterval = 3600

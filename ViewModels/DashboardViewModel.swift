@@ -29,10 +29,41 @@ final class DashboardViewModel: ObservableObject {
             UserDefaults.standard.set(showBalanceInMenuBar, forKey: "showBalanceInMenuBar")
         }
     }
+    @Published var preferredCurrency: CurrencyType = .cny {
+        didSet {
+            UserDefaults.standard.set(preferredCurrency.rawValue, forKey: "preferredCurrency")
+            if preferredCurrency == .usd {
+                fetchExchangeRate()
+            }
+        }
+    }
+    @Published var exchangeRate: Double?
+
+    enum CurrencyType: String, CaseIterable, Identifiable {
+        case cny = "CNY"
+        case usd = "USD"
+        var id: String { rawValue }
+        var symbol: String {
+            switch self {
+            case .cny: return "¥"
+            case .usd: return "$"
+            }
+        }
+    }
 
     var deepseekBalanceLabel: String {
-        guard let record = balances[.deepseek] else { return "" }
-        return String(format: "%.1f %@", record.totalBalance, record.currency)
+        let (amount, currency) = displayDeepseekBalance
+        guard let amount else { return "" }
+        return String(format: "\(currency.symbol)%.1f", amount)
+    }
+
+    var displayDeepseekBalance: (amount: Double?, currency: CurrencyType) {
+        guard let record = balances[.deepseek] else { return (nil, preferredCurrency) }
+        if preferredCurrency == .usd, let rate = exchangeRate {
+            let converted = record.totalBalance / rate
+            return (converted, .usd)
+        }
+        return (record.totalBalance, .cny)
     }
 
     private let keychain = KeychainStorage()
@@ -40,6 +71,7 @@ final class DashboardViewModel: ObservableObject {
     private let scheduler = RefreshScheduler()
     private var refreshTask: Task<Void, Never>?
     private var floatingPanel: FloatingPanelController?
+    private let exchangeService = ExchangeRateService()
 
     var totalCostThisMonth: Double {
         usageSummaries.values.reduce(0) { $0 + $1.totalCostThisMonth }
@@ -62,6 +94,21 @@ final class DashboardViewModel: ObservableObject {
     private func loadPreferences() {
         showFloatingWindow = UserDefaults.standard.bool(forKey: "showFloatingWindow")
         showBalanceInMenuBar = UserDefaults.standard.bool(forKey: "showBalanceInMenuBar")
+        if let raw = UserDefaults.standard.string(forKey: "preferredCurrency"),
+           let currency = CurrencyType(rawValue: raw) {
+            preferredCurrency = currency
+        }
+    }
+
+    func fetchExchangeRate() {
+        Task {
+            do {
+                let snapshot = try await exchangeService.fetchUSDCNYRate()
+                exchangeRate = snapshot.rate
+            } catch {
+                // Exchange rate unavailable — will show CNY
+            }
+        }
     }
 
     private func setupDefaultProviders() {
@@ -156,6 +203,16 @@ final class DashboardViewModel: ObservableObject {
                     lastUpdated: Date()
                 )
                 try? cache.saveUsageHistory(records, for: result.provider)
+            }
+        }
+
+        // Fetch exchange rate if USD display is preferred
+        if preferredCurrency == .usd {
+            do {
+                let snapshot = try await exchangeService.fetchUSDCNYRate()
+                exchangeRate = snapshot.rate
+            } catch {
+                // Will show CNY if rate unavailable
             }
         }
 

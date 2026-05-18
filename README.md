@@ -1,4 +1,4 @@
-# 🤖 AIUsageTracker
+# 🤖 kx
 
 **Track your AI API usage & balance — right from the macOS menu bar**
 
@@ -45,12 +45,12 @@
 ```bash
 # macOS 14.0+ required / 需要 macOS 14.0+
 xcodegen generate   # Generate Xcode project / 生成 Xcode 项目
-xcodebuild -scheme AIUsageTracker -configuration Release build
+xcodebuild -scheme kx -configuration Release build
 ```
 
-Or open `AIUsageTracker.xcodeproj` in Xcode and hit **Cmd+R**.
+Or open `kx.xcodeproj` in Xcode and hit **Cmd+R**.
 
-或者在 Xcode 中打开 `AIUsageTracker.xcodeproj`，按 **Cmd+R** 运行。
+或者在 Xcode 中打开 `kx.xcodeproj`，按 **Cmd+R** 运行。
 
 ### 3. Set up your API key / 配置 API Key
 
@@ -100,8 +100,8 @@ protocol UsageServiceProtocol {
 ## 📁 Project Structure / 项目结构
 
 ```
-AIUsageTracker/
-├── AIUsageTrackerApp.swift      # @main — MenuBarExtra entry
+kx/
+├── kxApp.swift      # @main — MenuBarExtra entry
 ├── Views/                       # SwiftUI UI
 │   ├── MenuBarPopover.swift     # Menu bar dropdown
 │   ├── ProviderRowView.swift    # Per-provider card
