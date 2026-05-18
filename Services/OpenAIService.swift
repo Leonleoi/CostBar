@@ -14,17 +14,48 @@ final class OpenAIService: UsageServiceProtocol {
     }
 
     func fetchBalance() async throws -> BalanceRecord {
-        let url = URL(string: "\(config.baseURL)\(AppConstants.OpenAI.balanceEndpoint)")!
-        var request = URLRequest(url: url)
-        request.setValue("Bearer \(config.apiKey)", forHTTPHeaderField: "Authorization")
+        // S1: fetch subscription — get hard_limit_usd (monthly spending cap)
+        let subURL = URL(string: "\(config.baseURL)\(AppConstants.OpenAI.balanceEndpoint)")!
+        var subReq = URLRequest(url: subURL)
+        subReq.setValue("Bearer \(config.apiKey)", forHTTPHeaderField: "Authorization")
 
-        let (data, response) = try await session.data(for: request)
-        try APIHelper.validateResponse(data: data, response: response)
+        let (subData, subResp) = try await session.data(for: subReq)
+        try APIHelper.validateResponse(data: subData, response: subResp)
 
-        let balanceResp = try decoder.decode(OpenAISubscriptionResponse.self, from: data)
+        let subscription = try decoder.decode(OpenAISubscriptionResponse.self, from: subData)
+        let hardLimit = subscription.hardLimitUsd ?? 0
+
+        // S2: fetch current month usage to compute remaining balance
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"
+        let now = Date()
+        let startOfMonth = Calendar.current.date(
+            from: Calendar.current.dateComponents([.year, .month], from: now)
+        )!
+
+        var components = URLComponents(string: "\(config.baseURL)\(AppConstants.OpenAI.usageEndpoint)")!
+        components.queryItems = [
+            URLQueryItem(name: "start_date", value: df.string(from: startOfMonth)),
+            URLQueryItem(name: "end_date", value: df.string(from: now))
+        ]
+        guard let usageURL = components.url else { throw URLError(.badURL) }
+
+        var usageReq = URLRequest(url: usageURL)
+        usageReq.setValue("Bearer \(config.apiKey)", forHTTPHeaderField: "Authorization")
+
+        let (usageData, usageResp) = try await session.data(for: usageReq)
+        try APIHelper.validateResponse(data: usageData, response: usageResp)
+
+        struct UsageTotal: Codable { let totalUsage: Double? }
+        let usage = try decoder.decode(UsageTotal.self, from: usageData)
+        // OpenAI returns total_usage in cents → convert to dollars
+        let totalUsed = (usage.totalUsage ?? 0) / 100.0
+
         return BalanceRecord(
             provider: .openai,
-            totalBalance: balanceResp.hardLimitUsd ?? 0,
+            totalBalance: max(0, hardLimit - totalUsed),
+            grantAmount: hardLimit,
+            totalUsed: totalUsed,
             currency: "USD"
         )
     }
