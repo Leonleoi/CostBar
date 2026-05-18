@@ -157,9 +157,3 @@ kx/
 PRs welcome! If you'd like to add a new provider or improve the app, feel free to open an issue or pull request.
 
 欢迎提交 PR！如果你想添加新服务商或改进功能，欢迎提 Issue 或 PR。
-
----
-
-## 📄 License / 许可
-
-MIT
