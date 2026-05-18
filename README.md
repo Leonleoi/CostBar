@@ -12,6 +12,10 @@
   <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" />
 </p>
 
+<p align="center">
+  <a href="https://leonleoi.github.io/deepseek-api/">🌐 Website / 官网</a>
+</p>
+
 ---
 
 ## ✨ Features / 功能
@@ -34,11 +38,8 @@
 
 ### 1. Download / 下载
 
-> **⏳ Coming soon — prebuilt binary**
-> For now, build from source (instructions below).
->
-> **⏳ 预编译版本即将发布**
-> 目前请自行从源码构建。
+> **📦 Download the latest build from the [official website](https://leonleoi.github.io/deepseek-api/).**
+> **📦 从[官网](https://leonleoi.github.io/deepseek-api/)下载最新版本。**
 
 ### 2. Build from source / 从源码构建
 
