@@ -59,6 +59,34 @@ struct SettingsView: View {
                     }
                 }
 
+                Section("Display") {
+                    Toggle(isOn: Binding(
+                        get: { dashboardVM.showFloatingWindow },
+                        set: { dashboardVM.showFloatingWindow = $0 }
+                    )) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Floating Widget")
+                                .font(.subheadline)
+                            Text("Always-on-top balance widget")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+
+                    Toggle(isOn: Binding(
+                        get: { dashboardVM.showBalanceInMenuBar },
+                        set: { dashboardVM.showBalanceInMenuBar = $0 }
+                    )) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Show Balance in Menu Bar")
+                                .font(.subheadline)
+                            Text("Display balance next to the menu bar icon")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+
                 Section("Refresh Settings") {
                     Slider(value: Binding(
                         get: { settingsVM.refreshInterval },

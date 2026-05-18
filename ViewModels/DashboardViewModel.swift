@@ -13,10 +13,33 @@ final class DashboardViewModel: ObservableObject {
     @Published var errorMessages: [AIProvider: String] = [:]
     @Published var globalError: String?
 
+    // Floating window & menu bar display
+    @Published var showFloatingWindow = false {
+        didSet {
+            UserDefaults.standard.set(showFloatingWindow, forKey: "showFloatingWindow")
+            if showFloatingWindow {
+                floatingPanel?.show()
+            } else {
+                floatingPanel?.hide()
+            }
+        }
+    }
+    @Published var showBalanceInMenuBar = false {
+        didSet {
+            UserDefaults.standard.set(showBalanceInMenuBar, forKey: "showBalanceInMenuBar")
+        }
+    }
+
+    var deepseekBalanceLabel: String {
+        guard let record = balances[.deepseek] else { return "" }
+        return String(format: "%.1f %@", record.totalBalance, record.currency)
+    }
+
     private let keychain = KeychainStorage()
     private let cache = LocalCache()
     private let scheduler = RefreshScheduler()
     private var refreshTask: Task<Void, Never>?
+    private var floatingPanel: FloatingPanelController?
 
     var totalCostThisMonth: Double {
         usageSummaries.values.reduce(0) { $0 + $1.totalCostThisMonth }
@@ -30,7 +53,15 @@ final class DashboardViewModel: ObservableObject {
         loadProviders()
         setupDefaultProviders()
         loadCachedData()
+        loadPreferences()
+        floatingPanel = FloatingPanelController(dashboardVM: self)
+        if showFloatingWindow { floatingPanel?.show() }
         startAutoRefresh()
+    }
+
+    private func loadPreferences() {
+        showFloatingWindow = UserDefaults.standard.bool(forKey: "showFloatingWindow")
+        showBalanceInMenuBar = UserDefaults.standard.bool(forKey: "showBalanceInMenuBar")
     }
 
     private func setupDefaultProviders() {

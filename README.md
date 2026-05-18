@@ -25,6 +25,8 @@
 | 📈 30-day usage history charts (Swift Charts) | 📈 30 天用量历史图表（Swift Charts） |
 | 🔌 Extensible provider architecture | 🔌 可扩展的多平台架构 |
 | 🌙 Menu bar only — no Dock icon clutter | 🌙 纯菜单栏运行，无 Dock 图标 |
+| 🪟 Always-on-top floating widget | 🪟 永远置顶悬浮窗显示余额 |
+| 📍 Show balance in the menu bar / notch area | 📍 在菜单栏/刘海区域显示余额 |
 
 ---
 

@@ -36,6 +36,7 @@ targets:
       - path: Services
       - path: Storage
       - path: Utils
+      - path: Support
       - path: Assets.xcassets
     settings:
       base:

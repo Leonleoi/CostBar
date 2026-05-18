@@ -18,11 +18,13 @@
 		634DD636F2B2FB6C025352EA /* ProviderConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FF1E506AB61F8AB939F75 /* ProviderConfig.swift */; };
 		6434E3513D43E5BC2AB0A979 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7106C1DA492A96CFE8ABDC8A /* SettingsViewModel.swift */; };
 		6CB208864A7D44883ECA9879 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39EC02BC89D43827BA507517 /* DateFormatters.swift */; };
+		7F32921A2D9C9EE5CFECEF64 /* FloatingPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D739879C65176BD5E4DB36D0 /* FloatingPanelController.swift */; };
 		8969BC6096664EF38843D25E /* LocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46B07748CF7B3EEB9FC4103 /* LocalCache.swift */; };
 		8D3DC0A610E077463949AF7B /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E40287C217F79DC937500BE /* OpenAIService.swift */; };
 		8D4F2CEBB106E6C3855AA064 /* BalanceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806C7244E3D4D73753DEB088 /* BalanceRecord.swift */; };
 		94399BF3F13C9D6DD53D1E92 /* KeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6313F3D7C9B7993F0F76C38E /* KeychainStorage.swift */; };
 		956DFFB159418040FF52D015 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89A959ABE0CC845B7E58D34 /* SettingsView.swift */; };
+		9DC7E5FC54657DD486A0FC33 /* FloatingBalanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4ECEB8E57EAF66F9DE4DD4 /* FloatingBalanceView.swift */; };
 		A46201D3D9DCEB1F451F1E59 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E8CF7DE46D9F6CDBDBEBB /* DashboardViewModel.swift */; };
 		AD32636E0E1EE2F11A6FF81B /* ProviderRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC35FE5D9EF067B1A2AC1845 /* ProviderRowView.swift */; };
 		B03B1DD631BC33A2A90C9708 /* DeepSeekServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B341AA739B23F7F56D763BA6 /* DeepSeekServiceTests.swift */; };
@@ -64,7 +66,9 @@
 		A46B07748CF7B3EEB9FC4103 /* LocalCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCache.swift; sourceTree = "<group>"; };
 		B341AA739B23F7F56D763BA6 /* DeepSeekServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepSeekServiceTests.swift; sourceTree = "<group>"; };
 		B8890F9330F015FCA59B9D4D /* UsageRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageRecord.swift; sourceTree = "<group>"; };
+		BC4ECEB8E57EAF66F9DE4DD4 /* FloatingBalanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingBalanceView.swift; sourceTree = "<group>"; };
 		D2ABB30F53ACE3687D0C5A49 /* LocalCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCacheTests.swift; sourceTree = "<group>"; };
+		D739879C65176BD5E4DB36D0 /* FloatingPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingPanelController.swift; sourceTree = "<group>"; };
 		D89A959ABE0CC845B7E58D34 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E97A6FA3B45241119EDEDCDF /* AnthropicService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnthropicService.swift; sourceTree = "<group>"; };
 		EDF4A4BA9D20AACD1A7F8A95 /* UsageServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageServiceProtocol.swift; sourceTree = "<group>"; };
@@ -75,6 +79,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		0066139FBF01DED28A49D09B /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				D739879C65176BD5E4DB36D0 /* FloatingPanelController.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
 		0938BE90FBD4C5E9FC3E7261 = {
 			isa = PBXGroup;
 			children = (
@@ -84,6 +96,7 @@
 				C6B4454153BD04BE5BE8E529 /* Models */,
 				8C2BCDF142A961E26F78A05B /* Services */,
 				71769985853956A37A635553 /* Storage */,
+				0066139FBF01DED28A49D09B /* Support */,
 				3AD2E96B68CDAFEAA6DBB09F /* Utils */,
 				AE6019E171A70C0AA5102A6F /* ViewModels */,
 				54B1A1E4E3B13512B14B8CDD /* Views */,
@@ -104,6 +117,7 @@
 		54B1A1E4E3B13512B14B8CDD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				BC4ECEB8E57EAF66F9DE4DD4 /* FloatingBalanceView.swift */,
 				1FE545EE15E9D70B4EC7B450 /* MenuBarPopover.swift */,
 				FC35FE5D9EF067B1A2AC1845 /* ProviderRowView.swift */,
 				D89A959ABE0CC845B7E58D34 /* SettingsView.swift */,
@@ -279,6 +293,8 @@
 				A46201D3D9DCEB1F451F1E59 /* DashboardViewModel.swift in Sources */,
 				6CB208864A7D44883ECA9879 /* DateFormatters.swift in Sources */,
 				5B059885762E2B19F92EA760 /* DeepSeekService.swift in Sources */,
+				9DC7E5FC54657DD486A0FC33 /* FloatingBalanceView.swift in Sources */,
+				7F32921A2D9C9EE5CFECEF64 /* FloatingPanelController.swift in Sources */,
 				94399BF3F13C9D6DD53D1E92 /* KeychainStorage.swift in Sources */,
 				8969BC6096664EF38843D25E /* LocalCache.swift in Sources */,
 				C647D8B0DEE7203BD7AC2539 /* MenuBarPopover.swift in Sources */,

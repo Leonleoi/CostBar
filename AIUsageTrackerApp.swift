@@ -10,8 +10,17 @@ struct AIUsageTrackerApp: App {
             MenuBarPopover()
                 .environmentObject(dashboardVM)
         } label: {
-            Image(systemName: "chart.pie.fill")
-                .font(.system(size: 14))
+            let label = dashboardVM.deepseekBalanceLabel
+            if dashboardVM.showBalanceInMenuBar, !label.isEmpty {
+                HStack(spacing: 4) {
+                    Text(label)
+                        .font(.system(size: 11, design: .monospaced))
+                    Image(systemName: "chart.pie.fill")
+                }
+            } else {
+                Image(systemName: "chart.pie.fill")
+                    .font(.system(size: 14))
+            }
         }
         .menuBarExtraStyle(.window)
 
