@@ -86,12 +86,20 @@ struct SettingsView: View {
                         }
                     }
 
-                    Picker("Currency", selection: Binding(
+                    Picker(selection: Binding(
                         get: { dashboardVM.preferredCurrency },
                         set: { dashboardVM.preferredCurrency = $0 }
                     )) {
                         Text("CNY ¥").tag(DashboardViewModel.CurrencyType.cny)
                         Text("USD $").tag(DashboardViewModel.CurrencyType.usd)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Currency Display")
+                                .font(.subheadline)
+                            Text("Show balance in CNY or USD")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
                     .pickerStyle(.segmented)
                 }
@@ -130,7 +138,7 @@ struct SettingsView: View {
             .tabItem { Label("Charts", systemImage: "chart.bar") }
             .padding()
         }
-        .frame(width: 480, height: 520)
+        .frame(width: 480, height: 600)
     }
 
     private func testConnection(provider: AIProvider) {

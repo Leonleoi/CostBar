@@ -59,11 +59,20 @@ final class DashboardViewModel: ObservableObject {
 
     var displayDeepseekBalance: (amount: Double?, currency: CurrencyType) {
         guard let record = balances[.deepseek] else { return (nil, preferredCurrency) }
-        if preferredCurrency == .usd, let rate = exchangeRate {
+        let actualCurrency = record.currency.uppercased()
+        // If user wants USD and balance is in CNY, convert
+        if preferredCurrency == .usd, actualCurrency == "CNY", let rate = exchangeRate {
             let converted = record.totalBalance / rate
             return (converted, .usd)
         }
-        return (record.totalBalance, .cny)
+        // If user wants CNY and balance is in USD, convert
+        if preferredCurrency == .cny, actualCurrency == "USD", let rate = exchangeRate {
+            let converted = record.totalBalance * rate
+            return (converted, .cny)
+        }
+        // Otherwise show in its original currency
+        let type = CurrencyType(rawValue: actualCurrency) ?? preferredCurrency
+        return (record.totalBalance, type)
     }
 
     private let keychain = KeychainStorage()
