@@ -38,8 +38,8 @@
 
 ### 1. Download / 下载
 
-> **📦 Download the latest build from the [official website](https://leonleoi.github.io/deepseek-api/).**
-> **📦 从[官网](https://leonleoi.github.io/deepseek-api/)下载最新版本。**
+> **📦 Download the latest build from the [official website]([[https://leonleoi.github.io/deepseek-api/].**
+> **📦 从[官网](https://leonleoi.github.io/CostBar/)下载最新版本。**
 
 ### 2. Build from source / 从源码构建
 
