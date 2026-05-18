@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a href="https://leonleoi.github.io/deepseek-api/">🌐 Website / 官网</a>
+  <a href="https://leonleoi.github.io/CostBar/">🌐 Website / 官网</a>
 </p>
 
 ---
@@ -38,7 +38,7 @@
 
 ### 1. Download / 下载
 
-> **📦 Download the latest build from the [official website]([[https://leonleoi.github.io/deepseek-api/].**
+> **📦 Download the latest build from the [official website][https://leonleoi.github.io/CostBar/].**
 > **📦 从[官网](https://leonleoi.github.io/CostBar/)下载最新版本。**
 
 ### 2. Build from source / 从源码构建
