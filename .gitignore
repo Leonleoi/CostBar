@@ -1,0 +1,17 @@
+# Xcode
+*.xcworkspace
+xcuserdata/
+DerivedData/
+*.hmap
+*.ipa
+*.xcuserstate
+
+# macOS
+.DS_Store
+*.swp
+*.lock
+
+# Build
+/build/
+/Packages/
+*.app
