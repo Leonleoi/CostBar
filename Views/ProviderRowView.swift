@@ -79,9 +79,14 @@ struct ProviderRowView: View {
                 ProgressView()
                     .scaleEffect(0.6)
             } else if let balance = dashboardVM.balances[config.provider] {
-                Text("\(String(format: "%.0f", min(balance.totalBalance / 100, 100)))%")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                VStack(alignment: .trailing, spacing: 1) {
+                    Text("\(String(format: "%.2f", balance.totalBalance))")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                    Text(balance.currency)
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
             } else if hasData || isNotSupported {
                 // No trailing indicator
                 EmptyView()

@@ -175,13 +175,16 @@ final class DashboardViewModel: ObservableObject {
                         errorMsg = error.localizedDescription
                     }
 
-                    if errorMsg == nil {
-                        let end = Date()
-                        let start = Calendar.current.date(byAdding: .day, value: -30, to: end)!
-                        do {
-                            records = try await service.fetchUsage(startDate: start, endDate: end)
-                        } catch {
-                            errorMsg = error.localizedDescription
+                    let end = Date()
+                    let start = Calendar.current.date(byAdding: .day, value: -30, to: end)!
+                    do {
+                        records = try await service.fetchUsage(startDate: start, endDate: end)
+                    } catch {
+                        let usageError = error.localizedDescription
+                        if balance == nil {
+                            errorMsg = errorMsg.map { "\($0); \(usageError)" } ?? usageError
+                        } else {
+                            errorMsg = usageError
                         }
                     }
 

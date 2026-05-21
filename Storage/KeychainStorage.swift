@@ -17,7 +17,7 @@ enum KeychainError: LocalizedError {
 }
 
 final class KeychainStorage {
-    private let service = "com.leonlei.kx"
+    private let service = "com.kx.kx"
 
     func save(key: String, value: String) throws {
         guard let data = value.data(using: .utf8) else { return }

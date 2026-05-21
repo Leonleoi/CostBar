@@ -1,4 +1,4 @@
-# 🤖 kx
+# 🤖 CostBar-kx
 
 **Track your AI API usage & balance — right from the macOS menu bar**
 
@@ -10,6 +10,10 @@
   <img src="https://img.shields.io/badge/macOS-14.0%2B-blue?logo=apple" alt="macOS 14.0+" />
   <img src="https://img.shields.io/badge/Swift-5.9-orange?logo=swift" alt="Swift 5.9" />
   <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" />
+</p>
+
+<p align="center">
+  <a href="https://leonleoi.github.io/CostBar/">🌐 Website / 官网</a>
 </p>
 
 ---
@@ -34,27 +38,24 @@
 
 ### 1. Download / 下载
 
-> **⏳ Coming soon — prebuilt binary**
-> For now, build from source (instructions below).
->
-> **⏳ 预编译版本即将发布**
-> 目前请自行从源码构建。
+> **📦 Download the latest build from the [official website](https://leonleoi.github.io/CostBar/).**
+> **📦 从[官网](https://leonleoi.github.io/CostBar/)下载最新版本。**
 
 ### 2. Build from source / 从源码构建
 
 ```bash
 # macOS 14.0+ required / 需要 macOS 14.0+
-xcodegen generate   # Generate Xcode project / 生成 Xcode 项目
-xcodebuild -scheme kx -configuration Release build
+xcodegen generate                      # Generate Xcode project
+xcodebuild -scheme CostBar-kx -configuration Release build
 ```
 
-Or open `kx.xcodeproj` in Xcode and hit **Cmd+R**.
+Or open `CostBar-kx.xcodeproj` in Xcode and hit **Cmd+R**.
 
-或者在 Xcode 中打开 `kx.xcodeproj`，按 **Cmd+R** 运行。
+或者在 Xcode 中打开 `CostBar-kx.xcodeproj`，按 **Cmd+R** 运行。
 
 ### 3. Set up your API key / 配置 API Key
 
-1. Click the pie chart icon 🥧 in the menu bar
+1. Click the chart icon in the menu bar
 2. Go to **Settings** → **API Keys**
 3. Enter your API key → **Save** → **Test Connection**
 
@@ -100,31 +101,31 @@ protocol UsageServiceProtocol {
 ## 📁 Project Structure / 项目结构
 
 ```
-kx/
-├── kxApp.swift      # @main — MenuBarExtra entry
-├── Views/                       # SwiftUI UI
-│   ├── MenuBarPopover.swift     # Menu bar dropdown
-│   ├── ProviderRowView.swift    # Per-provider card
-│   ├── UsageChartView.swift     # Swift Charts
-│   └── SettingsView.swift       # API keys & preferences
-├── ViewModels/                  # State management
-│   ├── DashboardViewModel.swift # Data aggregation & refresh
-│   └── SettingsViewModel.swift  # Settings state
-├── Models/                      # Data models
-│   ├── ProviderConfig.swift     # Provider enum + config
-│   ├── UsageRecord.swift        # Usage data
-│   └── BalanceRecord.swift      # Balance + API response types
-├── Services/                    # API layer
+CostBar-kx/
+├── CostBar-kxApp.swift  # @main — MenuBarExtra entry
+├── Views/                          # SwiftUI UI
+│   ├── MenuBarPopover.swift        # Menu bar dropdown
+│   ├── ProviderRowView.swift       # Per-provider card
+│   ├── UsageChartView.swift        # Swift Charts
+│   └── SettingsView.swift          # API keys & preferences
+├── ViewModels/                     # State management
+│   ├── DashboardViewModel.swift    # Data aggregation & refresh
+│   └── SettingsViewModel.swift     # Settings state
+├── Models/                         # Data models
+│   ├── ProviderConfig.swift        # Provider enum + config
+│   ├── UsageRecord.swift           # Usage data
+│   └── BalanceRecord.swift         # Balance + API response types
+├── Services/                       # API layer
 │   ├── UsageServiceProtocol.swift
 │   ├── DeepSeekService.swift
 │   ├── OpenAIService.swift
 │   ├── AnthropicService.swift
 │   ├── UsageServiceFactory.swift
 │   └── RefreshScheduler.swift
-├── Storage/                     # Persistence
-│   ├── KeychainStorage.swift    # Keychain wrapper
-│   └── LocalCache.swift         # Disk cache
-└── Utils/                       # Helpers
+├── Storage/                        # Persistence
+│   ├── KeychainStorage.swift       # Keychain wrapper
+│   └── LocalCache.swift            # Disk cache
+└── Utils/                          # Helpers
     ├── Constants.swift
     ├── DateFormatters.swift
     └── APIError.swift

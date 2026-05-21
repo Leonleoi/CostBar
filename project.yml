@@ -1,6 +1,6 @@
-name: kx
+name: CostBar-kx
 options:
-  bundleIdPrefix: com.leonlei
+  bundleIdPrefix: com.costbar
   deploymentTarget:
     macOS: "14.0"
   xcodeVersion: "16.0"
@@ -12,7 +12,7 @@ settings:
     CURRENT_PROJECT_VERSION: "1"
 
 targets:
-  kx:
+  CostBar-kx:
     type: application
     platform: macOS
     info:
@@ -22,14 +22,14 @@ targets:
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: false
     entitlements:
-      path: kx.entitlements
+      path: CostBar-kx.entitlements
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
         com.apple.security.files.user-selected.read-write: true
         com.apple.security.personal-information.keychain: true
     sources:
-      - path: kxApp.swift
+      - path: CostBar-kxApp.swift
       - path: Views
       - path: ViewModels
       - path: Models
@@ -43,19 +43,19 @@ targets:
         INFOPLIST_FILE: Info.plist
         CODE_SIGN_STYLE: Automatic
         CODE_SIGN_IDENTITY: "-"
-        PRODUCT_BUNDLE_IDENTIFIER: com.leonlei.kx
+        PRODUCT_BUNDLE_IDENTIFIER: com.costbar.kx
         ENABLE_HARDENED_RUNTIME: true
     dependencies: []
 
-  kxTests:
+  CostBar-kxTests:
     type: bundle.unit-test
     platform: macOS
     sources:
       - path: kxTests
         type: group
     dependencies:
-      - target: kx
+      - target: CostBar-kx
     settings:
       base:
-        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/kx.app/Contents/MacOS/kx"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/CostBar-kx.app/Contents/MacOS/CostBar-kx"
         BUNDLE_LOADER: "$(TEST_HOST)"

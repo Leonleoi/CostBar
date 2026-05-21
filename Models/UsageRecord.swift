@@ -11,10 +11,17 @@ struct UsageRecord: Codable, Identifiable {
     let cost: Double
     let currency: String
 
-    init(provider: AIProvider, promptTokens: Int, completionTokens: Int, cost: Double, currency: String = "USD") {
+    init(
+        provider: AIProvider,
+        timestamp: Date = Date(),
+        promptTokens: Int,
+        completionTokens: Int,
+        cost: Double,
+        currency: String = "USD"
+    ) {
         self.id = UUID()
         self.provider = provider
-        self.timestamp = Date()
+        self.timestamp = timestamp
         self.promptTokens = promptTokens
         self.completionTokens = completionTokens
         self.totalTokens = promptTokens + completionTokens

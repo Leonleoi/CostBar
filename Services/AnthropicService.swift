@@ -8,9 +8,10 @@ final class AnthropicService: UsageServiceProtocol {
     private let session: URLSession
     private let decoder = JSONDecoder()
 
-    init(config: ProviderConfig) {
+    init(config: ProviderConfig, session: URLSession = .shared) {
         self.config = config
-        self.session = URLSession.shared
+        self.session = session
+        self.decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
 
     func fetchBalance() async throws -> BalanceRecord {

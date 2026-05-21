@@ -1,8 +1,8 @@
-// kxApp.swift
+// CostBar-kxApp.swift
 import SwiftUI
 
 @main
-struct kxApp: App {
+struct CostBar_kxApp: App {
     @StateObject private var dashboardVM = DashboardViewModel()
 
     var body: some Scene {
