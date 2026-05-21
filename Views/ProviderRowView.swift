@@ -80,10 +80,13 @@ struct ProviderRowView: View {
                     .scaleEffect(0.6)
             } else if let balance = dashboardVM.balances[config.provider] {
                 VStack(alignment: .trailing, spacing: 1) {
-                    Text("\(String(format: "%.2f", balance.totalBalance))")
+                    let (amount, _) = config.provider == .deepseek
+                        ? dashboardVM.displayDeepseekBalance
+                        : (balance.totalBalance, dashboardVM.preferredCurrency)
+                    Text("\(String(format: "%.2f", amount ?? balance.totalBalance))")
                         .font(.caption)
                         .fontWeight(.semibold)
-                    Text(balance.currency)
+                    Text(dashboardVM.preferredCurrency.rawValue)
                         .font(.caption2)
                         .foregroundColor(.secondary)
                 }
