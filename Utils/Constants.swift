@@ -10,7 +10,7 @@ enum AppConstants {
     enum DeepSeek {
         static let baseURL = "https://api.deepseek.com"
         static let balanceEndpoint = "/user/balance"
-        static let usageEndpoint = "/dashboard/billing/usage"
+        // DeepSeek does not expose a public usage history API
     }
 
     enum OpenAI {
@@ -21,6 +21,5 @@ enum AppConstants {
 
     enum Anthropic {
         static let baseURL = "https://api.anthropic.com"
-        static let usageEndpoint = "/v1/usage"
     }
 }

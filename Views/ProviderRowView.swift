@@ -40,12 +40,8 @@ struct ProviderRowView: View {
                 }
 
                 if let balance = dashboardVM.balances[config.provider] {
-                    let (amount, currency) = config.provider == .deepseek
-                        ? dashboardVM.displayDeepseekBalance
-                        : (balance.totalBalance, dashboardVM.preferredCurrency)
-                    let dispAmount = amount ?? balance.totalBalance
-                    let dispCurrency = currency.rawValue
-                    Text("Balance: \(String(format: "%.2f", dispAmount)) \(dispCurrency)")
+                    let display = dashboardVM.displayBalance(for: balance)
+                    Text("Balance: \(String(format: "%.2f", display.amount)) \(display.currency.rawValue)")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -80,13 +76,11 @@ struct ProviderRowView: View {
                     .scaleEffect(0.6)
             } else if let balance = dashboardVM.balances[config.provider] {
                 VStack(alignment: .trailing, spacing: 1) {
-                    let (amount, _) = config.provider == .deepseek
-                        ? dashboardVM.displayDeepseekBalance
-                        : (balance.totalBalance, dashboardVM.preferredCurrency)
-                    Text("\(String(format: "%.2f", amount ?? balance.totalBalance))")
+                    let display = dashboardVM.displayBalance(for: balance)
+                    Text("\(String(format: "%.2f", display.amount))")
                         .font(.caption)
                         .fontWeight(.semibold)
-                    Text(dashboardVM.preferredCurrency.rawValue)
+                    Text(display.currency.rawValue)
                         .font(.caption2)
                         .foregroundColor(.secondary)
                 }

@@ -1,6 +1,6 @@
 // kxTests/LocalCacheTests.swift
 import XCTest
-@testable import kx
+@testable import CostBar_kx
 
 final class LocalCacheTests: XCTestCase {
     let cache = LocalCache()
@@ -16,5 +16,21 @@ final class LocalCacheTests: XCTestCase {
         XCTAssertEqual(loaded.count, records.count)
         XCTAssertEqual(loaded[0].totalTokens, 150)
         XCTAssertEqual(loaded[1].totalTokens, 300)
+    }
+
+    func testSaveAndLoadConfigPreservesNonSecretFields() throws {
+        var config = ProviderConfig(provider: .openai, apiKey: "secret", baseURL: "https://example.com")
+        config.isEnabled = false
+        config.displayOrder = 42
+
+        try cache.saveConfig([config])
+        let loaded = try cache.loadConfig()
+
+        XCTAssertEqual(loaded.count, 1)
+        XCTAssertEqual(loaded[0].provider, .openai)
+        XCTAssertEqual(loaded[0].apiKey, "")
+        XCTAssertEqual(loaded[0].baseURL, "https://example.com")
+        XCTAssertFalse(loaded[0].isEnabled)
+        XCTAssertEqual(loaded[0].displayOrder, 42)
     }
 }

@@ -1,5 +1,5 @@
 import XCTest
-@testable import kx
+@testable import CostBar_kx
 
 final class OpenAIServiceTests: XCTestCase {
     override func tearDown() {
@@ -34,6 +34,40 @@ final class OpenAIServiceTests: XCTestCase {
         XCTAssertEqual(balance.currency, "USD")
     }
 
+    func testFetchBalanceThrowsWhenHardLimitIsMissing() async {
+        let service = makeService { request in
+            let path = request.url?.path ?? ""
+            if path.hasSuffix("/dashboard/billing/subscription") {
+                return Self.response("{}")
+            }
+
+            return Self.response("""
+            {
+              "total_usage": 3450
+            }
+            """)
+        }
+
+        await XCTAssertThrowsErrorAsync(try await service.fetchBalance())
+    }
+
+    func testFetchBalanceThrowsWhenTotalUsageIsMissing() async {
+        let service = makeService { request in
+            let path = request.url?.path ?? ""
+            if path.hasSuffix("/dashboard/billing/subscription") {
+                return Self.response("""
+                {
+                  "hard_limit_usd": 120.0
+                }
+                """)
+            }
+
+            return Self.response("{}")
+        }
+
+        await XCTAssertThrowsErrorAsync(try await service.fetchBalance())
+    }
+
     func testFetchUsageKeepsDailyTimestamps() async throws {
         let service = makeService { _ in
             Self.response("""
@@ -55,7 +89,7 @@ final class OpenAIServiceTests: XCTestCase {
         let records = try await service.fetchUsage(startDate: Date(), endDate: Date())
 
         XCTAssertEqual(records.count, 1)
-        XCTAssertEqual(records[0].cost, 1.25)
+        XCTAssertEqual(records[0].cost, 0.0125, accuracy: 0.0001)
         XCTAssertEqual(records[0].timestamp.timeIntervalSince1970, 1_714_521_600)
     }
 
@@ -103,4 +137,17 @@ private final class MockURLProtocol: URLProtocol {
     }
 
     override func stopLoading() {}
+}
+
+private func XCTAssertThrowsErrorAsync(
+    _ expression: @autoclosure () async throws -> some Any,
+    file: StaticString = #filePath,
+    line: UInt = #line
+) async {
+    do {
+        _ = try await expression()
+        XCTFail("Expected error to be thrown", file: file, line: line)
+    } catch {
+        // Expected.
+    }
 }

@@ -23,7 +23,9 @@ final class OpenAIService: UsageServiceProtocol {
         try APIHelper.validateResponse(data: subData, response: subResp)
 
         let subscription = try decoder.decode(OpenAISubscriptionResponse.self, from: subData)
-        let hardLimit = subscription.hardLimitUsd ?? 0
+        guard let hardLimit = subscription.hardLimitUsd else {
+            throw APIError(statusCode: 0, message: "OpenAI subscription response missing hard_limit_usd")
+        }
 
         // S2: fetch current month usage to compute remaining balance
         let df = DateFormatter()
@@ -54,8 +56,11 @@ final class OpenAIService: UsageServiceProtocol {
             }
         }
         let usage = try decoder.decode(UsageTotal.self, from: usageData)
+        guard let totalUsage = usage.totalUsage else {
+            throw APIError(statusCode: 0, message: "OpenAI usage response missing total_usage")
+        }
         // OpenAI returns total_usage in cents → convert to dollars
-        let totalUsed = (usage.totalUsage ?? 0) / 100.0
+        let totalUsed = totalUsage / 100.0
 
         return BalanceRecord(
             provider: .openai,
@@ -117,7 +122,7 @@ final class OpenAIService: UsageServiceProtocol {
                 timestamp: Date(timeIntervalSince1970: TimeInterval(daily.timestamp)),
                 promptTokens: 0,
                 completionTokens: 0,
-                cost: daily.cost ?? 0,
+                cost: (daily.cost ?? 0) / 100.0,
                 currency: "USD"
             )
         } ?? []

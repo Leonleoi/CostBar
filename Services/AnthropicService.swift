@@ -28,42 +28,18 @@ final class AnthropicService: UsageServiceProtocol {
     }
 
     func fetchUsage(startDate: Date, endDate: Date) async throws -> [UsageRecord] {
-        let url = URL(string: "\(config.baseURL)\(AppConstants.Anthropic.usageEndpoint)")!
-        var request = URLRequest(url: url)
-        request.setValue("\(config.apiKey)", forHTTPHeaderField: "x-api-key")
-        request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
-
-        let (data, response) = try await session.data(for: request)
-        try APIHelper.validateResponse(data: data, response: response)
-
-        struct AnthropicUsageResponse: Codable {
-            let data: [UsageItem]?
-            struct UsageItem: Codable {
-                let inputTokens: Int?
-                let outputTokens: Int?
-                let cost: Double?
-            }
-        }
-
-        let usageResp = try decoder.decode(AnthropicUsageResponse.self, from: data)
-        return usageResp.data?.map { item in
-            UsageRecord(
-                provider: .anthropic,
-                promptTokens: item.inputTokens ?? 0,
-                completionTokens: item.outputTokens ?? 0,
-                cost: item.cost ?? 0,
-                currency: "USD"
-            )
-        } ?? []
+        throw UsageError.usageNotSupported
     }
 }
 
 enum UsageError: LocalizedError {
     case balanceNotSupported
+    case usageNotSupported
 
     var errorDescription: String? {
         switch self {
         case .balanceNotSupported: return "This provider does not support balance queries"
+        case .usageNotSupported: return "This provider does not support usage history"
         }
     }
 }

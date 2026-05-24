@@ -17,7 +17,7 @@ enum KeychainError: LocalizedError {
 }
 
 final class KeychainStorage {
-    private let service = "com.kx.kx"
+    private let service = Bundle.main.bundleIdentifier ?? "com.costbar.kx"
 
     func save(key: String, value: String) throws {
         guard let data = value.data(using: .utf8) else { return }
@@ -58,7 +58,10 @@ final class KeychainStorage {
             kSecAttrService as String: service,
             kSecAttrAccount as String: key
         ]
-        SecItemDelete(query as CFDictionary)
+        let status = SecItemDelete(query as CFDictionary)
+        guard status == errSecSuccess || status == errSecItemNotFound else {
+            throw KeychainError.unexpectedStatus(status)
+        }
     }
 
     func deleteAll() throws {
@@ -66,6 +69,9 @@ final class KeychainStorage {
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service
         ]
-        SecItemDelete(query as CFDictionary)
+        let status = SecItemDelete(query as CFDictionary)
+        guard status == errSecSuccess || status == errSecItemNotFound else {
+            throw KeychainError.unexpectedStatus(status)
+        }
     }
 }

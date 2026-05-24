@@ -4,9 +4,7 @@ import Combine
 
 @MainActor
 final class SettingsViewModel: ObservableObject {
-    @Published var refreshInterval: TimeInterval = AppConstants.defaultRefreshInterval {
-        didSet { onIntervalChange?(refreshInterval) }
-    }
+    @Published var refreshInterval: TimeInterval = AppConstants.defaultRefreshInterval
     @Published var showingAddProvider = false
     @Published var apiKeys: [AIProvider: String] = [:]
 
@@ -19,6 +17,7 @@ final class SettingsViewModel: ObservableObject {
 
     func saveRefreshInterval() {
         UserDefaults.standard.set(refreshInterval, forKey: "refreshInterval")
+        onIntervalChange?(refreshInterval)
     }
 
     func loadAPIKey(for provider: AIProvider) -> String {

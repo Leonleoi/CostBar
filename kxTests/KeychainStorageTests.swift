@@ -1,6 +1,6 @@
 // kxTests/KeychainStorageTests.swift
 import XCTest
-@testable import kx
+@testable import CostBar_kx
 
 final class KeychainStorageTests: XCTestCase {
     let storage = KeychainStorage()

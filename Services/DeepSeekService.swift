@@ -8,9 +8,9 @@ final class DeepSeekService: UsageServiceProtocol {
     private let session: URLSession
     private let decoder = JSONDecoder()
 
-    init(config: ProviderConfig) {
+    init(config: ProviderConfig, session: URLSession = .shared) {
         self.config = config
-        self.session = URLSession.shared
+        self.session = session
     }
 
     func fetchBalance() async throws -> BalanceRecord {
@@ -23,21 +23,32 @@ final class DeepSeekService: UsageServiceProtocol {
         try APIHelper.validateResponse(data: data, response: response)
 
         let payload = try decoder.decode(DeepSeekBalanceResponse.self, from: data)
-        let info = payload.balanceInfos.first
+        guard payload.isAvailable else {
+            throw APIError(statusCode: 0, message: "DeepSeek balance is currently unavailable")
+        }
+
+        guard let info = payload.balanceInfos.first else {
+            throw APIError(statusCode: 0, message: "DeepSeek returned empty balance info")
+        }
+
+        guard let totalBalanceText = info.totalBalance,
+              let totalBalance = Double(totalBalanceText) else {
+            throw APIError(statusCode: 0, message: "Invalid or missing DeepSeek balance value")
+        }
 
         return BalanceRecord(
             provider: .deepseek,
-            totalBalance: Double(info?.totalBalance ?? "0") ?? 0,
-            grantAmount: Double(info?.grantedBalance ?? "0"),
-            toppedUpAmount: Double(info?.toppedUpBalance ?? "0"),
-            currency: info?.currency ?? "CNY"
+            totalBalance: totalBalance,
+            grantAmount: info.grantedBalance.flatMap(Double.init),
+            toppedUpAmount: info.toppedUpBalance.flatMap(Double.init),
+            currency: info.currency
         )
     }
 
     func fetchUsage(startDate: Date, endDate: Date) async throws -> [UsageRecord] {
         // DeepSeek does not provide a usage history API.
         // Usage tracking must be done locally.
-        throw UsageError.balanceNotSupported
+        throw UsageError.usageNotSupported
     }
 
     func verifyConnection() async throws {

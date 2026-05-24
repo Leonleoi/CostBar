@@ -105,18 +105,21 @@ struct SettingsView: View {
                 }
 
                 Section("Refresh Settings") {
-                    Slider(value: Binding(
-                        get: { settingsVM.refreshInterval },
-                        set: { newVal in
-                            settingsVM.refreshInterval = newVal
+                    Slider(value: $settingsVM.refreshInterval, in: AppConstants.minRefreshInterval...AppConstants.maxRefreshInterval, step: 30) {
+                        Text("Refresh Interval")
+                    } onEditingChanged: { editing in
+                        if !editing {
                             settingsVM.saveRefreshInterval()
                         }
-                    ), in: AppConstants.minRefreshInterval...AppConstants.maxRefreshInterval, step: 30) {
-                        Text("Refresh Interval")
                     }
                     Text("Auto-refresh every \(Int(settingsVM.refreshInterval / 60)) minutes")
                         .font(.caption)
                         .foregroundColor(.secondary)
+                }
+                .onAppear {
+                    settingsVM.onIntervalChange = { newInterval in
+                        dashboardVM.startAutoRefresh(interval: newInterval)
+                    }
                 }
 
                 Section("About") {
@@ -133,7 +136,11 @@ struct SettingsView: View {
 
             UsageChartView(
                 records: dashboardVM.usageHistory.values.flatMap { $0 },
-                providerName: "All"
+                providerName: "All",
+                currencySymbol: dashboardVM.preferredCurrency.symbol,
+                displayCost: { record in
+                    dashboardVM.displayCost(record.cost, currency: record.currency).amount
+                }
             )
             .tabItem { Label("Charts", systemImage: "chart.bar") }
             .padding()

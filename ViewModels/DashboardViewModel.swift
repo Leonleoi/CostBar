@@ -32,7 +32,7 @@ final class DashboardViewModel: ObservableObject {
     @Published var preferredCurrency: CurrencyType = .cny {
         didSet {
             UserDefaults.standard.set(preferredCurrency.rawValue, forKey: "preferredCurrency")
-            if preferredCurrency == .usd {
+            if preferredCurrency == .usd && exchangeRate == nil {
                 fetchExchangeRate()
             }
         }
@@ -59,25 +59,32 @@ final class DashboardViewModel: ObservableObject {
 
     var displayDeepseekBalance: (amount: Double?, currency: CurrencyType) {
         guard let record = balances[.deepseek] else { return (nil, preferredCurrency) }
-        let actualCurrency = record.currency.uppercased()
-        // If user wants USD and balance is in CNY, convert
+        let display = displayBalance(for: record)
+        return (display.amount, display.currency)
+    }
+
+    func displayAmount(_ amount: Double, currency: String) -> (amount: Double, currency: CurrencyType) {
+        let actualCurrency = currency.uppercased()
         if preferredCurrency == .usd, actualCurrency == "CNY", let rate = exchangeRate {
-            let converted = record.totalBalance / rate
-            return (converted, .usd)
+            return (amount / rate, .usd)
         }
-        // If user wants CNY and balance is in USD, convert
         if preferredCurrency == .cny, actualCurrency == "USD", let rate = exchangeRate {
-            let converted = record.totalBalance * rate
-            return (converted, .cny)
+            return (amount * rate, .cny)
         }
-        // Otherwise show in its original currency
         let type = CurrencyType(rawValue: actualCurrency) ?? preferredCurrency
-        return (record.totalBalance, type)
+        return (amount, type)
+    }
+
+    func displayBalance(for record: BalanceRecord) -> (amount: Double, currency: CurrencyType) {
+        displayAmount(record.totalBalance, currency: record.currency)
+    }
+
+    func displayCost(_ amount: Double, currency: String) -> (amount: Double, currency: CurrencyType) {
+        displayAmount(amount, currency: currency)
     }
 
     private let keychain = KeychainStorage()
     private let cache = LocalCache()
-    private let scheduler = RefreshScheduler()
     private var refreshTask: Task<Void, Never>?
     private var floatingPanel: FloatingPanelController?
     private let exchangeService = ExchangeRateService()
@@ -90,6 +97,11 @@ final class DashboardViewModel: ObservableObject {
         providers.filter { $0.isEnabled && !$0.apiKey.isEmpty }.count
     }
 
+    private var savedRefreshInterval: TimeInterval {
+        let saved = UserDefaults.standard.double(forKey: "refreshInterval")
+        return saved > 0 ? saved : AppConstants.defaultRefreshInterval
+    }
+
     init() {
         loadProviders()
         setupDefaultProviders()
@@ -97,7 +109,7 @@ final class DashboardViewModel: ObservableObject {
         loadPreferences()
         floatingPanel = FloatingPanelController(dashboardVM: self)
         if showFloatingWindow { floatingPanel?.show() }
-        startAutoRefresh()
+        startAutoRefresh(interval: savedRefreshInterval)
     }
 
     private func loadPreferences() {
@@ -154,7 +166,13 @@ final class DashboardViewModel: ObservableObject {
     }
 
     func refreshAll() async {
+        guard !isRefreshing else { return }
         isRefreshing = true
+        defer {
+            isRefreshing = false
+            lastRefreshDate = Date()
+        }
+
         globalError = nil
         errorMessages = [:]
 
@@ -168,23 +186,32 @@ final class DashboardViewModel: ObservableObject {
                     var balance: BalanceRecord?
                     var records: [UsageRecord]?
                     var errorMsg: String?
+                    var connectionVerified = false
 
                     do {
                         balance = try await service.fetchBalance()
+                        connectionVerified = true
+                    } catch UsageError.balanceNotSupported {
+                        do {
+                            try await service.verifyConnection()
+                            connectionVerified = true
+                        } catch {
+                            errorMsg = error.localizedDescription
+                        }
                     } catch {
                         errorMsg = error.localizedDescription
                     }
 
-                    let end = Date()
-                    let start = Calendar.current.date(byAdding: .day, value: -30, to: end)!
-                    do {
-                        records = try await service.fetchUsage(startDate: start, endDate: end)
-                    } catch {
-                        let usageError = error.localizedDescription
-                        if balance == nil {
-                            errorMsg = errorMsg.map { "\($0); \(usageError)" } ?? usageError
-                        } else {
-                            errorMsg = usageError
+                    // Only fetch usage after the provider has proven the key is valid.
+                    if connectionVerified {
+                        let end = Date()
+                        let start = Calendar.current.date(byAdding: .day, value: -30, to: end)!
+                        do {
+                            records = try await service.fetchUsage(startDate: start, endDate: end)
+                        } catch is UsageError {
+                            // Expected: provider doesn't support usage history
+                        } catch {
+                            errorMsg = error.localizedDescription
                         }
                     }
 
@@ -200,7 +227,9 @@ final class DashboardViewModel: ObservableObject {
         }
 
         for result in results {
-            balances[result.provider] = result.balance
+            if let balance = result.balance {
+                balances[result.provider] = balance
+            }
             errorMessages[result.provider] = result.error
 
             if let records = result.records {
@@ -228,8 +257,6 @@ final class DashboardViewModel: ObservableObject {
             }
         }
 
-        isRefreshing = false
-        lastRefreshDate = Date()
     }
 
     func startAutoRefresh(interval: TimeInterval = AppConstants.defaultRefreshInterval) {
@@ -255,6 +282,7 @@ final class DashboardViewModel: ObservableObject {
         guard let index = providers.firstIndex(where: { $0.provider == provider }) else { return }
         providers[index].apiKey = key
         try? keychain.save(key: provider.rawValue, value: key)
+        saveProviderConfigs()
     }
 
     private func saveProviderConfigs() {

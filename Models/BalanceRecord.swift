@@ -47,15 +47,38 @@ struct DeepSeekBalanceResponse: Codable {
 
     struct BalanceInfo: Codable {
         let currency: String
-        let totalBalance: String
-        let grantedBalance: String
-        let toppedUpBalance: String
+        let totalBalance: String?
+        let grantedBalance: String?
+        let toppedUpBalance: String?
 
         enum CodingKeys: String, CodingKey {
             case currency
             case totalBalance = "total_balance"
             case grantedBalance = "granted_balance"
             case toppedUpBalance = "topped_up_balance"
+        }
+
+        // DeepSeek API may return numbers or strings for balance fields
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            currency = try container.decodeIfPresent(String.self, forKey: .currency) ?? "CNY"
+
+            totalBalance = Self.decodeDecimalString(from: container, forKey: .totalBalance)
+            grantedBalance = Self.decodeDecimalString(from: container, forKey: .grantedBalance)
+            toppedUpBalance = Self.decodeDecimalString(from: container, forKey: .toppedUpBalance)
+        }
+
+        private static func decodeDecimalString(
+            from container: KeyedDecodingContainer<CodingKeys>,
+            forKey key: CodingKeys
+        ) -> String? {
+            if let s = try? container.decode(String.self, forKey: key) {
+                return s
+            }
+            if let d = try? container.decode(Double.self, forKey: key) {
+                return String(d)
+            }
+            return nil
         }
     }
 

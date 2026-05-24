@@ -23,7 +23,6 @@
 		6D6185371C18817891E968AC /* DeepSeekService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7458B993A6082664836C58 /* DeepSeekService.swift */; };
 		7165445F187E684A60EB25FD /* UsageServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C659C42B91B1F528463A8DE4 /* UsageServiceProtocol.swift */; };
 		7755643D697F014B77F48C84 /* UsageChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B33B068E0F3871DB3995D7E /* UsageChartView.swift */; };
-		7C5B7202503BEA8BB4756250 /* RefreshScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D650D484061FFF233F55D1 /* RefreshScheduler.swift */; };
 		89F9E1F7E03EC31DF3E0C3C4 /* ProviderRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DB416E30C92091BC5F9DA66 /* ProviderRowView.swift */; };
 		8C3886A0C811CE7FE3FF5F58 /* KeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFF02F398CA28BC3D3EC2BD /* KeychainStorage.swift */; };
 		9BD9B5091922613E077BED78 /* KeychainStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C523290340771B0DD9EFF8 /* KeychainStorageTests.swift */; };
@@ -67,7 +66,6 @@
 		8116DFA22FB925AD435AFDA8 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		89F91E9FBF679EDA1359AC5F /* CostBar-kxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CostBar-kxTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DB416E30C92091BC5F9DA66 /* ProviderRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderRowView.swift; sourceTree = "<group>"; };
-		99D650D484061FFF233F55D1 /* RefreshScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshScheduler.swift; sourceTree = "<group>"; };
 		9D5C1F922188528E0F488341 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		ABBF58AF8FF440F332FF84DE /* DateFormatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 		B0747CC07DB2CDD09B10391F /* LocalCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCache.swift; sourceTree = "<group>"; };
@@ -166,7 +164,6 @@
 				6C7458B993A6082664836C58 /* DeepSeekService.swift */,
 				F022FF5BAC70745C01A4804A /* ExchangeRateService.swift */,
 				BA1FA2372A69B50FD909FA77 /* OpenAIService.swift */,
-				99D650D484061FFF233F55D1 /* RefreshScheduler.swift */,
 				062515279492813C2906E438 /* UsageServiceFactory.swift */,
 				C659C42B91B1F528463A8DE4 /* UsageServiceProtocol.swift */,
 			);
@@ -298,7 +295,6 @@
 				5F01E9C6E7F5EF8E5C12105A /* OpenAIService.swift in Sources */,
 				34838B9A8A15A145715F9521 /* ProviderConfig.swift in Sources */,
 				89F9E1F7E03EC31DF3E0C3C4 /* ProviderRowView.swift in Sources */,
-				7C5B7202503BEA8BB4756250 /* RefreshScheduler.swift in Sources */,
 				4EF5AD70A1EAEFF4866EE67E /* SettingsView.swift in Sources */,
 				D090677E282BC31A8DB657F5 /* SettingsViewModel.swift in Sources */,
 				7755643D697F014B77F48C84 /* UsageChartView.swift in Sources */,
@@ -354,6 +350,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -512,6 +509,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

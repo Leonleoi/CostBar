@@ -29,8 +29,9 @@ struct MenuBarPopover: View {
 
             // Summary
             HStack(spacing: 20) {
+                let monthly = monthlyCostDisplay
                 SummaryItem(label: "Active APIs", value: "\(dashboardVM.activeProviderCount)")
-                SummaryItem(label: "Monthly Cost", value: formatCurrency(dashboardVM.totalCostThisMonth))
+                SummaryItem(label: "Monthly Cost", value: formatCurrency(monthly.amount, symbol: monthly.currency.symbol))
                 if let lastRefresh = dashboardVM.lastRefreshDate {
                     SummaryItem(label: "Updated", value: formatTimeAgo(lastRefresh))
                 }
@@ -68,8 +69,15 @@ struct MenuBarPopover: View {
         .frame(width: 320)
     }
 
-    private func formatCurrency(_ value: Double) -> String {
-        String(format: "$%.2f", value)
+    private var monthlyCostDisplay: (amount: Double, currency: DashboardViewModel.CurrencyType) {
+        dashboardVM.usageSummaries.values.reduce((0, dashboardVM.preferredCurrency)) { partial, summary in
+            let converted = dashboardVM.displayCost(summary.totalCostThisMonth, currency: summary.currency)
+            return (partial.0 + converted.amount, converted.currency)
+        }
+    }
+
+    private func formatCurrency(_ value: Double, symbol: String = "$") -> String {
+        String(format: "\(symbol)%.2f", value)
     }
 
     private func formatTimeAgo(_ date: Date) -> String {

@@ -5,6 +5,8 @@ import Charts
 struct UsageChartView: View {
     let records: [UsageRecord]
     let providerName: String
+    var currencySymbol: String = "$"
+    var displayCost: (UsageRecord) -> Double = { $0.cost }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -35,7 +37,7 @@ struct UsageChartView: View {
                 }
                 .chartYAxis {
                     AxisMarks { value in
-                        AxisValueLabel(format: CurrencyFormatStyle())
+                        AxisValueLabel(format: CurrencyFormatStyle(symbol: currencySymbol))
                     }
                 }
                 .frame(height: 120)
@@ -48,7 +50,7 @@ struct UsageChartView: View {
             Calendar.current.startOfDay(for: record.timestamp)
         }
         return grouped.map { (date, items) in
-            (date: date, cost: items.reduce(0) { $0 + $1.cost })
+            (date: date, cost: items.reduce(0) { $0 + displayCost($1) })
         }.sorted { $0.date < $1.date }
     }
 }
@@ -57,7 +59,9 @@ struct CurrencyFormatStyle: FormatStyle {
     typealias FormatInput = Double
     typealias FormatOutput = String
 
+    var symbol: String = "$"
+
     func format(_ value: Double) -> String {
-        String(format: "$%.2f", value)
+        String(format: "\(symbol)%.2f", value)
     }
 }

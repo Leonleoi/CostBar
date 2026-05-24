@@ -59,3 +59,4 @@ targets:
       base:
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/CostBar-kx.app/Contents/MacOS/CostBar-kx"
         BUNDLE_LOADER: "$(TEST_HOST)"
+        GENERATE_INFOPLIST_FILE: YES

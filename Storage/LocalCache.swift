@@ -35,7 +35,9 @@ final class LocalCache {
         let file = dir.appendingPathComponent("provider_configs.json")
         // Strip API keys — those are in Keychain
         let safeConfigs = configs.map { c in
-            ProviderConfig(provider: c.provider, apiKey: "", baseURL: c.baseURL)
+            var safe = c
+            safe.apiKey = ""
+            return safe
         }
         let data = try encoder.encode(safeConfigs)
         try data.write(to: file)

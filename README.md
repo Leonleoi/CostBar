@@ -40,6 +40,8 @@
 
 > **📦 Download the latest build from the [official website](https://leonleoi.github.io/CostBar/).**
 > **📦 从[官网](https://leonleoi.github.io/CostBar/)下载最新版本。**
+>
+> Release artifact: `CostBar-kx-macOS.zip`
 
 ### 2. Build from source / 从源码构建
 
