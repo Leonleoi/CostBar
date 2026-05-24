@@ -18,7 +18,9 @@ protocol UsageServiceProtocol {
 extension UsageServiceProtocol {
     /// Default implementation: try fetching models endpoint
     func verifyConnection() async throws {
-        let url = URL(string: "\(config.baseURL)/models")!
+        guard let url = URL(string: "\(config.baseURL)/models") else {
+            throw URLError(.badURL)
+        }
         var request = URLRequest(url: url)
         request.setValue("Bearer \(config.apiKey)", forHTTPHeaderField: "Authorization")
         request.timeoutInterval = 10

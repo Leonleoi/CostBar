@@ -19,7 +19,9 @@ final class AnthropicService: UsageServiceProtocol {
     }
 
     func verifyConnection() async throws {
-        let url = URL(string: "\(config.baseURL)/v1/models")!
+        guard let url = URL(string: "\(config.baseURL)/v1/models") else {
+            throw URLError(.badURL)
+        }
         var request = URLRequest(url: url)
         request.setValue("\(config.apiKey)", forHTTPHeaderField: "x-api-key")
         request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")

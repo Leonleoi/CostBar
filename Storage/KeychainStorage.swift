@@ -20,7 +20,14 @@ final class KeychainStorage {
     private let service = Bundle.main.bundleIdentifier ?? "com.costbar.kx"
 
     func save(key: String, value: String) throws {
-        guard let data = value.data(using: .utf8) else { return }
+        // Empty value → delete existing key instead of saving empty data
+        guard !value.isEmpty else {
+            try? delete(key: key)
+            return
+        }
+        guard let data = value.data(using: .utf8) else {
+            throw KeychainError.unexpectedStatus(errSecParam)
+        }
         // Delete existing item first
         try? delete(key: key)
         let query: [String: Any] = [
@@ -28,7 +35,8 @@ final class KeychainStorage {
             kSecAttrService as String: service,
             kSecAttrAccount as String: key,
             kSecValueData as String: data,
-            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+            kSecUseDataProtectionKeychain as String: true
         ]
         let status = SecItemAdd(query as CFDictionary, nil)
         guard status == errSecSuccess else {
@@ -42,7 +50,8 @@ final class KeychainStorage {
             kSecAttrService as String: service,
             kSecAttrAccount as String: key,
             kSecReturnData as String: true,
-            kSecMatchLimit as String: kSecMatchLimitOne
+            kSecMatchLimit as String: kSecMatchLimitOne,
+            kSecUseDataProtectionKeychain as String: true
         ]
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
@@ -56,7 +65,8 @@ final class KeychainStorage {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
-            kSecAttrAccount as String: key
+            kSecAttrAccount as String: key,
+            kSecUseDataProtectionKeychain as String: true
         ]
         let status = SecItemDelete(query as CFDictionary)
         guard status == errSecSuccess || status == errSecItemNotFound else {
@@ -67,7 +77,8 @@ final class KeychainStorage {
     func deleteAll() throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service
+            kSecAttrService as String: service,
+            kSecUseDataProtectionKeychain as String: true
         ]
         let status = SecItemDelete(query as CFDictionary)
         guard status == errSecSuccess || status == errSecItemNotFound else {

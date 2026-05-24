@@ -12,6 +12,12 @@ struct SettingsView: View {
         TabView {
             Form {
                 Section("API Keys") {
+                    if let saveError = dashboardVM.saveError {
+                        Text(saveError)
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .padding(.vertical, 4)
+                    }
                     ForEach(AIProvider.allCases) { provider in
                         VStack(alignment: .leading, spacing: 4) {
                             Text(provider.rawValue)
@@ -30,8 +36,7 @@ struct SettingsView: View {
 
                             HStack {
                                 Button("Save") {
-                                    dashboardVM.updateAPIKey(for: provider, key: apiKeyInputs[provider] ?? "")
-                                    testResults[provider] = "Saved"
+                                    saveAPIKey(provider: provider)
                                 }
                                 .buttonStyle(.borderedProminent)
                                 .controlSize(.small)
@@ -146,6 +151,20 @@ struct SettingsView: View {
             .padding()
         }
         .frame(width: 480, height: 600)
+    }
+
+    private func saveAPIKey(provider: AIProvider) {
+        let key = apiKeyInputs[provider] ?? ""
+        do {
+            let saved = try dashboardVM.updateAPIKey(for: provider, key: key)
+            if saved {
+                dashboardVM.saveError = nil
+                testResults[provider] = "Saved"
+            }
+        } catch {
+            testResults[provider] = "Save failed"
+            dashboardVM.saveError = "Failed to save API key to Keychain: \(error.localizedDescription)"
+        }
     }
 
     private func testConnection(provider: AIProvider) {

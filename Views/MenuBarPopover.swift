@@ -43,7 +43,7 @@ struct MenuBarPopover: View {
             // Provider list
             ScrollView {
                 VStack(spacing: 8) {
-                    ForEach(dashboardVM.providers.filter { $0.isEnabled && !$0.apiKey.isEmpty }) { config in
+                    ForEach(dashboardVM.enabledProviders) { config in
                         ProviderRowView(config: config)
                     }
                 }

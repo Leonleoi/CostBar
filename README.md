@@ -1,4 +1,4 @@
-# 🤖 CostBar-kx
+# CostBar-kx
 
 **Track your AI API usage & balance — right from the macOS menu bar**
 
@@ -9,11 +9,12 @@
 <p align="center">
   <img src="https://img.shields.io/badge/macOS-14.0%2B-blue?logo=apple" alt="macOS 14.0+" />
   <img src="https://img.shields.io/badge/Swift-5.9-orange?logo=swift" alt="Swift 5.9" />
+  <img src="https://img.shields.io/badge/version-1.0.1-brightgreen" alt="v1.0.1" />
   <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" />
 </p>
 
 <p align="center">
-  <a href="https://leonleoi.github.io/CostBar/">🌐 Website / 官网</a>
+  <a href="https://leonleoi.github.io/CostBar/">Website / 官网</a>
 </p>
 
 ---
@@ -31,6 +32,20 @@
 | 🌙 Menu bar only — no Dock icon clutter | 🌙 纯菜单栏运行，无 Dock 图标 |
 | 🪟 Always-on-top floating widget | 🪟 永远置顶悬浮窗显示余额 |
 | 📍 Show balance in the menu bar / notch area | 📍 在菜单栏/刘海区域显示余额 |
+
+---
+
+## Changelog / 更新日志
+
+### v1.0.1 (2026-05-24)
+
+- Fix: Keychain save errors now shown in UI instead of failing silently
+- Fix: API key persistence with sandbox compatibility (`kSecUseDataProtectionKeychain`)
+- Fix: `isEnabled` no longer reset to `true` on every app launch
+- Fix: Exchange rate service now correctly parses Frankfurter API response
+- Fix: Empty API key no longer saved as corrupt Keychain entry
+- Fix: All URL force-unwraps replaced with safe `guard let` + throw
+- Fix: Menu bar now shows all enabled providers, including those without API keys
 
 ---
 

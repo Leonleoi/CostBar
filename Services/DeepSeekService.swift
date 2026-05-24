@@ -14,7 +14,9 @@ final class DeepSeekService: UsageServiceProtocol {
     }
 
     func fetchBalance() async throws -> BalanceRecord {
-        let url = URL(string: "\(config.baseURL)/user/balance")!
+        guard let url = URL(string: "\(config.baseURL)/user/balance") else {
+            throw URLError(.badURL)
+        }
         var request = URLRequest(url: url)
         request.setValue("Bearer \(config.apiKey)", forHTTPHeaderField: "Authorization")
         request.timeoutInterval = 10
@@ -52,7 +54,9 @@ final class DeepSeekService: UsageServiceProtocol {
     }
 
     func verifyConnection() async throws {
-        let url = URL(string: "\(config.baseURL)/models")!
+        guard let url = URL(string: "\(config.baseURL)/models") else {
+            throw URLError(.badURL)
+        }
         var request = URLRequest(url: url)
         request.setValue("Bearer \(config.apiKey)", forHTTPHeaderField: "Authorization")
         request.timeoutInterval = 10

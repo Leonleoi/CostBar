@@ -21,10 +21,13 @@ struct ExchangeRateService {
         }
 
         struct RateEnvelope: Decodable {
-            let rate: Double
+            let rates: [String: Double]
         }
 
         let envelope = try JSONDecoder().decode(RateEnvelope.self, from: data)
-        return ExchangeRateSnapshot(rate: envelope.rate, fetchedAt: Date())
+        guard let rate = envelope.rates["CNY"] else {
+            throw URLError(.cannotParseResponse)
+        }
+        return ExchangeRateSnapshot(rate: rate, fetchedAt: Date())
     }
 }

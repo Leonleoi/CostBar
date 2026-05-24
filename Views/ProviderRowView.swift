@@ -20,6 +20,10 @@ struct ProviderRowView: View {
             && dashboardVM.isRefreshing
     }
 
+    private var needsAPIKey: Bool {
+        config.apiKey.isEmpty
+    }
+
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: config.provider.iconName)
@@ -39,7 +43,11 @@ struct ProviderRowView: View {
                     }
                 }
 
-                if let balance = dashboardVM.balances[config.provider] {
+                if needsAPIKey {
+                    Text("API key not configured")
+                        .font(.caption)
+                        .foregroundColor(.orange)
+                } else if let balance = dashboardVM.balances[config.provider] {
                     let display = dashboardVM.displayBalance(for: balance)
                     Text("Balance: \(String(format: "%.2f", display.amount)) \(display.currency.rawValue)")
                         .font(.caption)
@@ -62,7 +70,7 @@ struct ProviderRowView: View {
                         .foregroundColor(.red)
                 }
 
-                if !hasData && !isNotSupported && !isLoading {
+                if !hasData && !isNotSupported && !isLoading && !needsAPIKey {
                     Text("No data yet")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -74,6 +82,10 @@ struct ProviderRowView: View {
             if isLoading {
                 ProgressView()
                     .scaleEffect(0.6)
+            } else if needsAPIKey {
+                Text("Add Key")
+                    .font(.caption)
+                    .foregroundColor(.orange)
             } else if let balance = dashboardVM.balances[config.provider] {
                 VStack(alignment: .trailing, spacing: 1) {
                     let display = dashboardVM.displayBalance(for: balance)
@@ -84,9 +96,6 @@ struct ProviderRowView: View {
                         .font(.caption2)
                         .foregroundColor(.secondary)
                 }
-            } else if hasData || isNotSupported {
-                // No trailing indicator
-                EmptyView()
             }
         }
         .padding(10)

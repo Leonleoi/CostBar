@@ -12,6 +12,7 @@ final class DashboardViewModel: ObservableObject {
     @Published var lastRefreshDate: Date?
     @Published var errorMessages: [AIProvider: String] = [:]
     @Published var globalError: String?
+    @Published var saveError: String?
 
     // Floating window & menu bar display
     @Published var showFloatingWindow = false {
@@ -97,6 +98,10 @@ final class DashboardViewModel: ObservableObject {
         providers.filter { $0.isEnabled && !$0.apiKey.isEmpty }.count
     }
 
+    var enabledProviders: [ProviderConfig] {
+        providers.filter { $0.isEnabled }
+    }
+
     private var savedRefreshInterval: TimeInterval {
         let saved = UserDefaults.standard.double(forKey: "refreshInterval")
         return saved > 0 ? saved : AppConstants.defaultRefreshInterval
@@ -147,10 +152,9 @@ final class DashboardViewModel: ObservableObject {
             let configs = try cache.loadConfig()
             if !configs.isEmpty {
                 self.providers = configs.map { cached in
-                    // Try to load API key from Keychain
                     var config = cached
                     config.apiKey = (try? keychain.read(key: cached.provider.rawValue)) ?? ""
-                    config.isEnabled = true
+                    // Preserve cached isEnabled instead of always resetting to true
                     return config
                 }
             }
@@ -278,11 +282,15 @@ final class DashboardViewModel: ObservableObject {
         refreshTask = nil
     }
 
-    func updateAPIKey(for provider: AIProvider, key: String) {
-        guard let index = providers.firstIndex(where: { $0.provider == provider }) else { return }
+    /// Saves the API key to Keychain. Throws an error on Keychain failure so the UI can show the error.
+    /// Returns true on success, false if the provider was not found.
+    @discardableResult
+    func updateAPIKey(for provider: AIProvider, key: String) throws -> Bool {
+        guard let index = providers.firstIndex(where: { $0.provider == provider }) else { return false }
+        try keychain.save(key: provider.rawValue, value: key)
         providers[index].apiKey = key
-        try? keychain.save(key: provider.rawValue, value: key)
         saveProviderConfigs()
+        return true
     }
 
     private func saveProviderConfigs() {
